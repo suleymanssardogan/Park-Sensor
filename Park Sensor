@@ -1,0 +1,65 @@
+//adding library for HC-SR04
+#include <Wire.h>
+
+//assigments
+const int trigPin =6;
+const int echoPin =5;
+const int buzzerPin=10;
+const int ledPin=9;
+int time=0;
+int distance =0;
+
+void setup() {
+  
+  pinMode(buzzerPin,OUTPUT);
+  pinMode(ledPin,OUTPUT);
+  //We assigmeent trig to OUTPUT beacuse It is sending voice and echo pick up the sound produced by trig
+  pinMode(trigPin,OUTPUT);
+  pinMode(echoPin,INPUT);
+  Serial.begin(9600);
+
+}
+
+void loop() {
+  digitalWrite(trigPin,HIGH);
+  delayMicroseconds(1000);
+  digitalWrite(trigPin,LOW);
+  delayMicroseconds(1000);
+  time =pulseIn(echoPin,HIGH);
+  //this formula I found the ınternet 
+  distance =(time/2)/28.5;
+  Serial.print("Distance: ");
+  //I wanna see the distance what we measured .It is making sure to me
+  Serial.println(distance);
+
+
+//My program if sensor sees something too far ıt is measuring the distance "negative" therefore my program was being crazy and ı put this "if block"
+  if(distance<0){
+
+    digitalWrite(buzzerPin,LOW);
+    digitalWrite(ledPin,HIGH);
+  }
+
+  else{
+
+//distance lower than 15 cm
+  if(distance<15)
+  {
+  digitalWrite(buzzerPin,HIGH);
+  digitalWrite(ledPin,HIGH);
+  //The closer the obstacle is,the faster the buzzer and LED work
+  delay(distance*10);
+  digitalWrite(buzzerPin,LOW);
+  digitalWrite(ledPin,LOW);
+  delay(distance*10);
+  }
+  
+  else if(distance>=15){
+    digitalWrite(buzzerPin,LOW);
+    digitalWrite(ledPin,LOW);
+  }
+
+  }
+
+  
+}
